@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-bg: #FAF7F5;
+  --color-brand-white: #FFFFFF;
+  --color-brand-blush: #F8EEF0;
+  --color-brand-primary: #E85D75;
+  --color-brand-softpink: #FADADD;
+  --color-brand-text: #1E1A1D;
+  --color-brand-muted: #6E6368;
+  --color-brand-border: #EDE4E6;
+
+  --font-serif: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+}
+
+/* Custom Base & Utilities */
+html {
+  scrollbar-gutter: stable;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .liquid-mouse-canvas,
+  .custom-mouse-cursor {
+    display: none !important;
+  }
+}
+
+:root {
+  --brand-bg: #FAF7F5;
+  --brand-white: #FFFFFF;
+  --brand-blush: #F8EEF0;
+  --brand-primary: #E85D75;
+  --brand-softpink: #FADADD;
+  --brand-text: #1E1A1D;
+  --brand-muted: #6E6368;
+  --brand-border: #EDE4E6;
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: var(--brand-bg);
+  color: var(--brand-text);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, .font-serif {
+  font-family: var(--font-sans);
+}
+
+/* Swiper custom styling */
+.swiper-pagination-bullet {
+  background: #6E6368 !important;
+  opacity: 0.3 !important;
+  transition: all 0.25s ease !important;
+}
+
+.swiper-pagination-bullet-active {
+  background: #E85D75 !important;
+  opacity: 1 !important;
+  width: 20px !important;
+  border-radius: 9999px !important;
+}
+
+/* Continuous linear motion for Swiper sliders (prevents easing pauses) */
+.swiper-linear-marquee .swiper-wrapper {
+  transition-timing-function: linear !important;
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF7F5;
+}
+::-webkit-scrollbar-thumb {
+  background: #EDE4E6;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6E6368;
+}
+
+/* Smooth Linear Marquee Utilities (Right-to-Left and Left-to-Right) */
+@keyframes marquee-rtl {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-ltr {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-rtl 28s linear infinite;
+}
+
+.animate-marquee-slow,
+.animate-marquee-rtl-slow {
+  display: flex;
+  width: max-content;
+  animation: marquee-rtl 42s linear infinite;
+}
+
+.animate-marquee-ltr {
+  display: flex;
+  width: max-content;
+  animation: marquee-ltr 28s linear infinite;
+}
+
+.animate-marquee-ltr-slow {
+  display: flex;
+  width: max-content;
+  animation: marquee-ltr 42s linear infinite;
+}
+
+.animate-marquee:hover,
+.animate-marquee-slow:hover,
+.animate-marquee-rtl-slow:hover,
+.animate-marquee-ltr:hover,
+.animate-marquee-ltr-slow:hover {
+  animation-play-state: paused;
+}
+
+/* Accessibility: prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
