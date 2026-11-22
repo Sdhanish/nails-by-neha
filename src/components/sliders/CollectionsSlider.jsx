@@ -3,8 +3,14 @@ import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import ImageWithFallback from '../common/ImageWithFallback';
 import { COLLECTIONS } from '../../data/collections';
+import { useMarqueeDrag } from '../../hooks/useMarqueeDrag';
 
 export default function CollectionsSlider() {
+  const { trackRef, containerProps } = useMarqueeDrag({
+    direction: 'ltr',
+    speed: 45,
+  });
+
   // 3 repeats of the 4 collections = 12 cards per group
   // Two identical groups (Set 1 and Set 2) guarantee that translating from -50% to 0%
   // continuously moves the collection cards from LEFT TO RIGHT in a truly seamless infinite marquee.
@@ -16,16 +22,22 @@ export default function CollectionsSlider() {
   ];
 
   return (
-    <div className="lookbook-marquee-container relative w-full overflow-hidden select-none py-2">
+    <div
+      {...containerProps}
+      className="lookbook-marquee-container relative w-full overflow-hidden select-none py-2 cursor-grab active:cursor-grabbing"
+    >
       {/* 
-        Continuous Left-to-Right Infinite Marquee Track:
-        - Animated using GPU translate3d(-50%, 0, 0) -> translate3d(0, 0, 0).
-        - Moves continuously from LEFT TO RIGHT with no pauses, stops, or slide-by-slide transitions.
-        - Zero React state re-renders while moving.
+        Continuous Left-to-Right Infinite Marquee Track with Manual Drag & Touch Swipe:
+        - Animated using GPU translate3d via ultra-smooth RAF loop.
+        - Moves continuously from LEFT TO RIGHT with zero jumps or resets upon drag release.
+        - Zero React state re-renders while moving or dragging.
         - Exact subpixel loop matching: both groups have identical items, gaps, and trailing padding.
         - touch-action: pan-y preserves natural vertical scrolling without interception.
       */}
-      <div className="flex w-max lookbook-marquee-track">
+      <div
+        ref={trackRef}
+        className="flex w-max lookbook-marquee-track"
+      >
         {/* Set 1: Primary Group */}
         <div className="flex shrink-0 items-stretch gap-3.5 sm:gap-5 lg:gap-6 pr-3.5 sm:pr-5 lg:pr-6">
           {marqueeGroup.map((col, idx) => (

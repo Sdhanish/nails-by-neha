@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import ImageWithFallback from './ImageWithFallback';
 
@@ -42,77 +42,23 @@ const STUDIO_CATEGORIES = [
 ];
 
 export default function ProductMarchingMarquee() {
-  const [isPaused, setIsPaused] = useState(false);
-
-  // 3 repeats of the 6 categories = 18 items per group
-  // Two identical groups (Set 1 and Set 2) guarantee that translating -50% of the combined track
-  // shifts Set 1 exactly out of view while placing Set 2 at the exact starting coordinate of Set 1.
-  // Group width is ~1,870px on mobile and ~3,020px on desktop, preventing any blank gap on any screen up to 4K.
-  const marqueeGroup = [
-    ...STUDIO_CATEGORIES,
-    ...STUDIO_CATEGORIES,
-    ...STUDIO_CATEGORIES,
-  ];
-
   return (
-    <section className="w-full py-4 sm:py-6 overflow-hidden">
-      <div
-        className="studio-icons-marquee-container relative w-full overflow-hidden select-none py-2"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-        onTouchStart={() => setIsPaused(true)}
-        onTouchEnd={() => setIsPaused(false)}
-        onTouchCancel={() => setIsPaused(false)}
-      >
-        {/* 
-          Continuous Slow Infinite Marquee Track:
-          - Animated via GPU translate3d(0, 0, 0) -> translate3d(-50%, 0, 0).
-          - Zero React re-renders during motion.
-          - Exact subpixel loop matching: both groups have identical items, gaps, and trailing padding.
-          - touch-action: pan-y preserves natural vertical scrolling without interception.
-        */}
-        <div
-          className={`flex w-max studio-icons-marquee-track ${
-            isPaused ? 'is-paused' : ''
-          }`}
-        >
-          {/* Set 1: Primary Group */}
-          <div className="flex shrink-0 items-center gap-6 sm:gap-8 lg:gap-10 pr-6 sm:pr-8 lg:pr-10">
-            {marqueeGroup.map((item, idx) => (
-              <CategoryIconCard
-                key={`studio-primary-${item.name}-${idx}`}
-                item={item}
-                isClone={false}
-              />
-            ))}
-          </div>
-
-          {/* Set 2: Duplicate Group for 100% seamless, mathematically exact loop */}
-          <div
-            className="flex shrink-0 items-center gap-6 sm:gap-8 lg:gap-10 pr-6 sm:pr-8 lg:pr-10"
-            aria-hidden="true"
-          >
-            {marqueeGroup.map((item, idx) => (
-              <CategoryIconCard
-                key={`studio-clone-${item.name}-${idx}`}
-                item={item}
-                isClone={true}
-              />
-            ))}
-          </div>
-        </div>
+    <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="grid grid-cols-3 sm:grid-cols-6 gap-y-6 gap-x-3 sm:gap-x-4 lg:gap-x-6 justify-items-center">
+        {STUDIO_CATEGORIES.map((item) => (
+          <CategoryIconCard key={item.name} item={item} />
+        ))}
       </div>
     </section>
   );
 }
 
-function CategoryIconCard({ item, isClone = false }) {
+function CategoryIconCard({ item }) {
   return (
     <Link
       to={item.link}
-      tabIndex={isClone ? -1 : 0}
       draggable={false}
-      className="group flex flex-col items-center shrink-0 focus:outline-none transition-transform duration-300 hover:-translate-y-1.5"
+      className="group flex flex-col items-center focus:outline-none transition-transform duration-300 hover:-translate-y-1.5"
     >
       {/* Circular category thumbnail with soft blush glow on hover */}
       <div className="relative w-[68px] h-[68px] xs:w-[76px] xs:h-[76px] sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full p-1 sm:p-1.5 group-hover:shadow-[0_8px_20px_rgba(232,93,117,0.18)] transition-all duration-300">

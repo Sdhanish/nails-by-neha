@@ -16,6 +16,7 @@
 
 /* Custom Base & Utilities */
 html {
+  overflow-x: hidden;
   scrollbar-gutter: stable;
 }
 
@@ -85,89 +86,40 @@ h1, h2, h3, h4, h5, h6, .font-serif {
   }
 }
 
+/* Interactive Infinite Marquees with Drag Support */
 .lookbook-marquee-container,
-.studio-icons-marquee-container,
-.bestsellers-marquee-container {
+.bestsellers-marquee-container,
+.insta-marquee-container {
   touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
 }
 
-/* Featured Collections: True Continuous Left-to-Right Infinite Marquee */
-.lookbook-marquee-track {
-  display: flex;
-  width: max-content;
-  animation: continuous-marquee-ltr 106s linear infinite;
-  will-change: transform;
-  touch-action: pan-y;
+.lookbook-marquee-container:active,
+.bestsellers-marquee-container:active,
+.insta-marquee-container:active {
+  cursor: grabbing;
 }
 
-@media (max-width: 640px) {
-  .lookbook-marquee-track {
-    animation-duration: 82s;
-  }
-}
-
-.bestsellers-marquee-track {
-  display: flex;
-  width: max-content;
-  animation: continuous-marquee-rtl 72s linear infinite;
-  will-change: transform;
-  touch-action: pan-y;
-}
-
-@media (max-width: 640px) {
-  .bestsellers-marquee-track {
-    animation-duration: 54s;
-  }
-}
-
-.studio-icons-marquee-track {
-  display: flex;
-  width: max-content;
-  animation: continuous-marquee-rtl 52s linear infinite;
-  will-change: transform;
-  touch-action: pan-y;
-}
-
-@media (max-width: 640px) {
-  .studio-icons-marquee-track {
-    animation-duration: 36s;
-  }
-}
-
-.studio-icons-marquee-track:hover,
-.studio-icons-marquee-track:active,
-.studio-icons-marquee-track.is-paused,
-.bestsellers-marquee-track:hover,
-.bestsellers-marquee-track:active,
-.bestsellers-marquee-track.is-paused {
-  animation-play-state: paused;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .lookbook-marquee-track,
-  .studio-icons-marquee-track,
-  .bestsellers-marquee-track {
-    animation: none !important;
-  }
-  .lookbook-marquee-container,
-  .studio-icons-marquee-container,
-  .bestsellers-marquee-container {
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-  }
-}
-
+.lookbook-marquee-track,
+.bestsellers-marquee-track,
 .insta-marquee-track {
   display: flex;
   width: max-content;
-  animation: continuous-marquee-rtl 34s linear infinite;
   will-change: transform;
   touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.insta-marquee-track:hover,
-.insta-marquee-track.is-paused {
-  animation-play-state: paused;
+@media (prefers-reduced-motion: reduce) {
+  .lookbook-marquee-container,
+  .bestsellers-marquee-container,
+  .insta-marquee-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 /* Continuous linear motion for Swiper sliders (prevents easing pauses) */

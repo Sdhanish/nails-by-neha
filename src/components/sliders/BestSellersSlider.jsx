@@ -1,37 +1,36 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ProductCard from '../products/ProductCard';
+import { useMarqueeDrag } from '../../hooks/useMarqueeDrag';
 
 export default function BestSellersSlider({ products = [] }) {
-  const [isPaused, setIsPaused] = useState(false);
+  const { trackRef, containerProps } = useMarqueeDrag({
+    direction: 'rtl',
+    speed: 45,
+  });
 
   if (!products || products.length === 0) return null;
 
-  // We use the 12 bestsellers per group.
+  // We use the bestsellers per group.
   // Two identical groups (Set 1 and Set 2) guarantee that translating -50% of the combined track
   // shifts Set 1 exactly out of view while placing Set 2 at the exact starting coordinate of Set 1.
-  // Group width is ~2,750px on mobile and ~3,890px on desktop, preventing any blank gap on any screen up to 4K.
   const marqueeGroup = products;
 
   return (
     <div
-      className="bestsellers-marquee-container relative w-full overflow-hidden select-none py-2"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={() => setIsPaused(true)}
-      onTouchEnd={() => setIsPaused(false)}
-      onTouchCancel={() => setIsPaused(false)}
+      {...containerProps}
+      className="bestsellers-marquee-container relative w-full overflow-hidden select-none py-2 cursor-grab active:cursor-grabbing"
     >
       {/* 
-        Slow, Continuous Infinite Best Sellers Marquee Track:
-        - Animated using GPU translate3d(0, 0, 0) -> translate3d(-50%, 0, 0).
-        - Zero React re-renders while moving.
+        Slow, Continuous Infinite Best Sellers Marquee Track with Manual Drag & Touch Swipe:
+        - Animated using GPU translate3d via ultra-smooth RAF loop.
+        - Moves continuously from RIGHT TO LEFT with zero jumps or resets upon drag release.
+        - Zero React state re-renders while moving or dragging.
         - Exact subpixel loop matching: both groups have identical items, gaps, and trailing padding.
         - touch-action: pan-y preserves natural vertical scrolling without interception.
       */}
       <div
-        className={`flex w-max bestsellers-marquee-track ${
-          isPaused ? 'is-paused' : ''
-        }`}
+        ref={trackRef}
+        className="flex w-max bestsellers-marquee-track"
       >
         {/* Set 1: Primary Group */}
         <div className="flex shrink-0 items-stretch gap-3.5 sm:gap-5 lg:gap-6 pr-3.5 sm:pr-5 lg:pr-6">

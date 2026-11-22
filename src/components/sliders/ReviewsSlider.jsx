@@ -32,7 +32,7 @@ export default function ReviewsSlider() {
       </div>
 
       {/* Swiper Review Cards */}
-      <div className="overflow-visible">
+      <div className="overflow-hidden sm:overflow-visible">
         <Swiper
           modules={[Navigation]}
           loop={true}
@@ -58,7 +58,7 @@ export default function ReviewsSlider() {
               spaceBetween: 24,
             },
           }}
-          className="overflow-visible! py-2"
+          className="overflow-hidden sm:overflow-visible! py-2"
         >
           {loopReviews.map((review, idx) => (
             <SwiperSlide key={`${review.id}-${idx}`} className="h-auto">

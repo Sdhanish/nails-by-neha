@@ -39,13 +39,13 @@ export default function Header() {
             : 'bg-gradient-to-r from-[#FAF7F5] via-[#FFF9FA] to-[#FAF7F5] border-b border-[#EDE4E6]/80'
         } py-3 sm:py-3.5`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-2 xs:px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Left: Luxury Editorial Hamburger Button with smooth micro-interaction */}
             <div className="flex items-center shrink-0">
               <button
                 onClick={() => setIsMenuOpen(true)}
-                className="group flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border border-[#EDE4E6] bg-white/80 hover:bg-white text-[#1E1A1D] hover:border-[#E85D75]/60 hover:shadow-xs active:scale-95 transition-all duration-200 cursor-pointer shadow-2xs"
+                className="group flex items-center gap-2 px-2.5 xs:px-3 sm:px-4 py-1.5 xs:py-2 rounded-full border border-[#EDE4E6] bg-white/80 hover:bg-white text-[#1E1A1D] hover:border-[#E85D75]/60 hover:shadow-xs active:scale-95 transition-all duration-200 cursor-pointer shadow-2xs"
                 aria-label="Open menu"
                 aria-expanded={isMenuOpen}
               >
@@ -60,19 +60,19 @@ export default function Header() {
 
             {/* Center: Brand Logo in Lowercase with Exact Typography Rules */}
             {/* First part: ExtraBold 800; Second part: Light 300; Tight tracking -0.04em */}
-            <div className="text-center flex flex-col items-center justify-center px-2">
+            <div className="text-center flex flex-col items-center justify-center px-1 xs:px-2">
               <Link to="/" className="inline-flex items-baseline gap-1 sm:gap-1.5 group select-none">
-                <span className="font-extrabold text-lg sm:text-2xl lg:text-[1.65rem] tracking-[-0.04em] text-[#1E1A1D] group-hover:text-[#E85D75] transition-colors whitespace-nowrap lowercase">
+                <span className="font-extrabold text-[15px] xs:text-lg sm:text-2xl lg:text-[1.65rem] tracking-[-0.04em] text-[#1E1A1D] group-hover:text-[#E85D75] transition-colors whitespace-nowrap lowercase">
                   nails & lashes
                 </span>
-                <span className="font-light text-lg sm:text-2xl lg:text-[1.65rem] tracking-[-0.04em] text-[#6E6368] group-hover:text-[#E85D75] transition-colors whitespace-nowrap lowercase">
+                <span className="font-light text-[15px] xs:text-lg sm:text-2xl lg:text-[1.65rem] tracking-[-0.04em] text-[#6E6368] group-hover:text-[#E85D75] transition-colors whitespace-nowrap lowercase">
                   by neha
                 </span>
               </Link>
             </div>
 
             {/* Right: Functional Action Icons */}
-            <div className="flex items-center justify-end space-x-1 sm:space-x-1.5 shrink-0">
+            <div className="flex items-center justify-end space-x-0.5 xs:space-x-1 sm:space-x-1.5 shrink-0">
               {/* Search Icon */}
               <button
                 onClick={() => setIsSearchOpen(true)}

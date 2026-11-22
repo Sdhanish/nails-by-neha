@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { Heart } from 'lucide-react';
 import ImageWithFallback from '../common/ImageWithFallback';
 import { BRAND_CONFIG } from '../../config/brand';
+import { useMarqueeDrag } from '../../hooks/useMarqueeDrag';
 
 const INSTA_POSTS = [
   {
@@ -56,87 +57,71 @@ const INSTA_POSTS = [
 ];
 
 export default function InstagramSlider() {
-  const [isPaused, setIsPaused] = useState(false);
-  const dragInfo = useRef({ isDown: false, startX: 0, hasMoved: false });
-
-  // Two identical sets of posts guarantee a mathematically seamless -50% loop reset with zero jitter
-  const loopPosts = [...INSTA_POSTS, ...INSTA_POSTS];
-
-  const handlePointerDown = (e) => {
-    dragInfo.current = {
-      isDown: true,
-      startX: e.pageX || e.clientX,
-      hasMoved: false,
-    };
-  };
-
-  const handlePointerMove = (e) => {
-    if (!dragInfo.current.isDown) return;
-    const currentX = e.pageX || e.clientX;
-    if (Math.abs(currentX - dragInfo.current.startX) > 6) {
-      dragInfo.current.hasMoved = true;
-      setIsPaused(true);
-    }
-  };
-
-  const handlePointerUp = () => {
-    dragInfo.current.isDown = false;
-    setIsPaused(false);
-  };
+  const { trackRef, containerProps } = useMarqueeDrag({
+    direction: 'rtl',
+    speed: 40,
+  });
 
   return (
     <div
-      className="relative w-full overflow-hidden select-none py-2"
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => {
-        dragInfo.current.isDown = false;
-        setIsPaused(false);
-      }}
+      {...containerProps}
+      className="insta-marquee-container relative w-full overflow-hidden select-none py-2 cursor-grab active:cursor-grabbing"
     >
-      {/* Continuous GPU-accelerated Infinite Track */}
+      {/* Continuous GPU-accelerated Infinite Track with Manual Drag & Touch Swipe */}
       <div
-        className={`insta-marquee-track gap-3 sm:gap-4 lg:gap-5 px-3 ${
-          isPaused ? 'is-paused' : ''
-        }`}
+        ref={trackRef}
+        className="flex w-max insta-marquee-track"
       >
-        {loopPosts.map((post, idx) => (
-          <a
-            key={`${post.id}-${idx}`}
-            href={BRAND_CONFIG.social.instagram}
-            target="_blank"
-            rel="noreferrer"
-            draggable={false}
-            onClick={(e) => {
-              if (dragInfo.current.hasMoved) e.preventDefault();
-            }}
-            className="group relative w-[155px] xs:w-[175px] sm:w-[215px] md:w-[245px] lg:w-[265px] aspect-4/5 rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[#EDE4E6] shadow-2xs hover:shadow-md transition-all duration-300 block shrink-0"
-          >
-            <ImageWithFallback
-              src={post.image}
-              alt={post.caption}
-              className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-106 pointer-events-none"
-            />
+        {/* Set 1: Primary Group */}
+        <div className="flex shrink-0 items-stretch gap-3 sm:gap-4 lg:gap-5 pr-3 sm:pr-4 lg:pr-5">
+          {INSTA_POSTS.map((post, idx) => (
+            <InstagramCard key={`insta-primary-${post.id}-${idx}`} post={post} isClone={false} />
+          ))}
+        </div>
 
-            {/* Ambient Instagram Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1E1A1D]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 sm:p-4 text-white pointer-events-none">
-              <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-[#FADADD] mb-1">
-                <Heart className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
-                <span>{post.likes}</span>
-              </div>
-              <p className="text-[10px] sm:text-[11px] text-white/90 font-normal lowercase line-clamp-2 leading-snug">
-                {post.caption}
-              </p>
-              <span className="text-[9px] sm:text-[10px] text-[#FADADD]/80 font-medium lowercase tracking-wider mt-0.5 sm:mt-1 block">
-                {post.tag}
-              </span>
-            </div>
-          </a>
-        ))}
+        {/* Set 2: Duplicate Group for 100% seamless, mathematically exact loop */}
+        <div
+          className="flex shrink-0 items-stretch gap-3 sm:gap-4 lg:gap-5 pr-3 sm:pr-4 lg:pr-5"
+          aria-hidden="true"
+        >
+          {INSTA_POSTS.map((post, idx) => (
+            <InstagramCard key={`insta-clone-${post.id}-${idx}`} post={post} isClone={true} />
+          ))}
+        </div>
       </div>
     </div>
+  );
+}
+
+function InstagramCard({ post, isClone = false }) {
+  return (
+    <a
+      href={BRAND_CONFIG.social.instagram}
+      target="_blank"
+      rel="noreferrer"
+      draggable={false}
+      tabIndex={isClone ? -1 : 0}
+      className="group relative w-[155px] xs:w-[175px] sm:w-[215px] md:w-[245px] lg:w-[265px] aspect-4/5 rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[#EDE4E6] shadow-2xs hover:shadow-md transition-all duration-300 block shrink-0"
+    >
+      <ImageWithFallback
+        src={post.image}
+        alt={post.caption}
+        className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-106 pointer-events-none"
+      />
+
+      {/* Ambient Instagram Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1E1A1D]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 sm:p-4 text-white pointer-events-none">
+        <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-[#FADADD] mb-1">
+          <Heart className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
+          <span>{post.likes}</span>
+        </div>
+        <p className="text-[10px] sm:text-[11px] text-white/90 font-normal lowercase line-clamp-2 leading-snug">
+          {post.caption}
+        </p>
+        <span className="text-[9px] sm:text-[10px] text-[#FADADD]/80 font-medium lowercase tracking-wider mt-0.5 sm:mt-1 block">
+          {post.tag}
+        </span>
+      </div>
+    </a>
   );
 }

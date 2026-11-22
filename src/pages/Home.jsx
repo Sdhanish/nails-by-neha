@@ -159,10 +159,8 @@ export default function Home() {
         <BestSellersSlider products={bestsellers} />
       </section>
 
-      {/* 2. FULL-WIDTH STUDIO ARCHIVE CIRCULAR CATEGORY ROW */}
-      <ScrollReveal delay={0.05} yOffset={16}>
-        <ProductMarchingMarquee />
-      </ScrollReveal>
+      {/* 2. STUDIO ARCHIVE — STATIC CATEGORY ROW */}
+      <ProductMarchingMarquee />
 
       {/* 6. CUSTOMER REVIEWS SWIPER */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
