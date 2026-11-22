@@ -153,7 +153,8 @@ export default function Footer() {
             <span className="lowercase">© {new Date().getFullYear()} {BRAND_CONFIG.legalName.toLowerCase()}. all rights reserved.</span>
           </div>
 
-          <div className="flex items-center gap-2 text-[11px] font-medium text-[#6E6368]">
+          {/* Payment Methods: Hidden on mobile (< 768px), visible on tablet and desktop (>= 768px) */}
+          <div className="hidden md:flex items-center gap-2 text-[11px] font-medium text-[#6E6368]">
             <span className="px-2 py-0.5 rounded bg-[#FAF7F5] border border-[#EDE4E6]">upi</span>
             <span className="px-2 py-0.5 rounded bg-[#FAF7F5] border border-[#EDE4E6]">visa</span>
             <span className="px-2 py-0.5 rounded bg-[#FAF7F5] border border-[#EDE4E6]">mastercard</span>
