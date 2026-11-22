@@ -33,11 +33,11 @@ export default function Header() {
   return (
     <>
       <header
-        className={`sticky top-0 z-40 transition-all duration-300 ${
+        className={`sticky top-0 z-40 transition-colors duration-250 ${
           isScrolled
-            ? 'bg-gradient-to-r from-white/95 via-[#FAF7F5]/95 to-[#F8EEF0]/90 backdrop-blur-md shadow-xs border-b border-[#EDE4E6] py-3'
-            : 'bg-gradient-to-r from-[#FAF7F5] via-[#FFF9FA] to-[#FAF7F5] border-b border-[#EDE4E6]/80 py-3.5 sm:py-4'
-        }`}
+            ? 'bg-gradient-to-r from-white/95 via-[#FAF7F5]/95 to-[#F8EEF0]/90 backdrop-blur-md shadow-xs border-b border-[#EDE4E6]'
+            : 'bg-gradient-to-r from-[#FAF7F5] via-[#FFF9FA] to-[#FAF7F5] border-b border-[#EDE4E6]/80'
+        } py-3 sm:py-3.5`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
@@ -54,9 +54,7 @@ export default function Header() {
                   <span className="w-full h-0.5 bg-[#1E1A1D] rounded-full transition-all duration-200 group-hover:w-3/4 group-hover:bg-[#E85D75]" />
                   <span className="w-3/4 h-0.5 bg-[#E85D75] rounded-full transition-all duration-200 group-hover:w-full" />
                 </div>
-                <span className="text-[11px] font-medium tracking-[-0.01em] lowercase text-[#1E1A1D] group-hover:text-[#E85D75] transition-colors hidden sm:inline">
-                  menu
-                </span>
+             
               </button>
             </div>
 

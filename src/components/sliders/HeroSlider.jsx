@@ -66,6 +66,8 @@ export default function HeroSlider() {
           pauseOnMouseEnter: false,
         }}
         grabCursor={true}
+        touchReleaseOnEdges={true}
+        touchAngle={25}
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
         }}

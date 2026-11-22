@@ -19,13 +19,8 @@ export default function CustomCursor() {
   });
 
   useEffect(() => {
-    // Check if device has a fine pointer (mouse / trackpad) or supports hover
-    // Using (any-pointer: fine) and (hover: hover) ensures Windows touch/hybrid laptops also work
-    const hasFinePointer =
-      window.matchMedia('(pointer: fine)').matches ||
-      window.matchMedia('(any-pointer: fine)').matches ||
-      window.matchMedia('(hover: hover)').matches;
-
+    // Only run on devices with a true mouse/trackpad pointer
+    const hasFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     if (!hasFinePointer) return;
 
     // Respect reduced-motion preference
@@ -50,11 +45,18 @@ export default function CustomCursor() {
     updateCanvasSize();
     window.addEventListener('resize', updateCanvasSize, { passive: true });
 
-    // Ripples: { x, y, radius, maxRadius, alpha, decay, growth, colorType }
+    // Expanding water ripples: { x, y, radius, maxRadius, alpha, decay, growth, colorType }
     const ripples = [];
 
-    // Trail points: { x, y, alpha, width }
-    const trail = [];
+    let isLoopRunning = false;
+    let lastTarget = null;
+
+    const requestRender = () => {
+      if (!isLoopRunning) {
+        isLoopRunning = true;
+        animFrameId.current = requestAnimationFrame(render);
+      }
+    };
 
     const handleMouseMove = (e) => {
       const x = e.clientX;
@@ -76,33 +78,36 @@ export default function CustomCursor() {
       }, 70);
 
       const target = e.target;
-      if (!target || !target.closest) return;
+      if (target && target.closest && target !== lastTarget) {
+        lastTarget = target;
+        // Text inputs / editable elements
+        const isInput =
+          target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable ||
+          Boolean(target.closest('input, textarea, [contenteditable="true"]'));
+        hoverState.current.isInput = isInput;
 
-      // Text inputs / editable elements
-      const isInput =
-        target.tagName === 'INPUT' ||
-        target.tagName === 'TEXTAREA' ||
-        target.isContentEditable ||
-        Boolean(target.closest('input, textarea, [contenteditable="true"]'));
-      hoverState.current.isInput = isInput;
+        // Buttons / links
+        const isInteractive =
+          target.tagName === 'BUTTON' ||
+          target.tagName === 'A' ||
+          target.getAttribute('role') === 'button' ||
+          Boolean(target.closest('button, a, [role="button"]'));
+        hoverState.current.isInteractive = isInteractive;
 
-      // Buttons / links
-      const isInteractive =
-        target.tagName === 'BUTTON' ||
-        target.tagName === 'A' ||
-        target.getAttribute('role') === 'button' ||
-        Boolean(target.closest('button, a, [role="button"]'));
-      hoverState.current.isInteractive = isInteractive;
-
-      // Cards / images
-      const isCard =
-        Boolean(target.closest('.group')) ||
-        target.tagName === 'IMG' ||
-        Boolean(target.closest('article, .swiper-slide'));
-      hoverState.current.isCard = isCard && !isInteractive;
+        // Cards / images
+        const isCard =
+          Boolean(target.closest('.group')) ||
+          target.tagName === 'IMG' ||
+          Boolean(target.closest('article, .swiper-slide'));
+        hoverState.current.isCard = isCard && !isInteractive;
+      }
 
       // No ripples over text inputs
-      if (isInput) return;
+      if (hoverState.current.isInput) {
+        return;
+      }
 
       const now = performance.now();
       const distFromLastSpawn = Math.hypot(
@@ -110,16 +115,7 @@ export default function CustomCursor() {
         y - lastSpawnPos.current.y
       );
 
-      // Trail point
-      trail.push({
-        x,
-        y,
-        alpha: hoverState.current.isCard ? 0.35 : 0.22,
-        width: Math.min(Math.max(dist * 0.4, 4), 14),
-      });
-      if (trail.length > 16) trail.shift();
-
-      // Spawn ripple as the cursor travels
+      // Spawn expanding water ripple as cursor travels across water surface
       if (distFromLastSpawn > 14 || (dist > 6 && now - lastSpawnTime.current > 35)) {
         lastSpawnPos.current = { x, y };
         lastSpawnTime.current = now;
@@ -154,22 +150,26 @@ export default function CustomCursor() {
 
         // Cap active ripples for performance
         if (ripples.length > 22) ripples.shift();
+        requestRender();
       }
     };
 
-    const handleMouseDown = () => {
+    const handleMouseDown = (e) => {
       if (hoverState.current.isInput) return;
-      // Click impulse wave
+      const x = e ? e.clientX : mousePos.current.x;
+      const y = e ? e.clientY : mousePos.current.y;
+      // Click impulse wave (soft expanding water droplet)
       ripples.push({
-        x: mousePos.current.x,
-        y: mousePos.current.y,
+        x,
+        y,
         radius: 8,
-        maxRadius: 42,
+        maxRadius: 44,
         alpha: 0.4,
         decay: 0.93,
         growth: 0.12,
         colorType: 'accent',
       });
+      requestRender();
     };
 
     const handleMouseLeave = () => {
@@ -178,43 +178,20 @@ export default function CustomCursor() {
 
     const handleMouseEnter = () => {
       hoverState.current.isVisible = true;
+      requestRender();
     };
 
     window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    window.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('mouseleave', handleMouseLeave);
-    document.addEventListener('mouseenter', handleMouseEnter);
+    window.addEventListener('mousedown', handleMouseDown, { passive: true });
+    document.addEventListener('mouseleave', handleMouseLeave, { passive: true });
+    document.addEventListener('mouseenter', handleMouseEnter, { passive: true });
 
-    // Render loop
+    // Render loop: draws expanding water ripples and sleeps when all have faded
     const render = () => {
       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-      if (hoverState.current.isVisible && !hoverState.current.isInput) {
-        // 1. Fluid trailing wake
-        if (trail.length > 2) {
-          ctx.beginPath();
-          ctx.moveTo(trail[0].x, trail[0].y);
-          for (let i = 1; i < trail.length - 1; i++) {
-            const xc = (trail[i].x + trail[i + 1].x) / 2;
-            const yc = (trail[i].y + trail[i + 1].y) / 2;
-            ctx.quadraticCurveTo(trail[i].x, trail[i].y, xc, yc);
-          }
-
-          const head = trail[trail.length - 1];
-          const tail = trail[0];
-          const trailGrad = ctx.createLinearGradient(tail.x, tail.y, head.x, head.y);
-          trailGrad.addColorStop(0, 'rgba(250, 218, 221, 0)');
-          trailGrad.addColorStop(0.6, 'rgba(250, 218, 221, 0.18)');
-          trailGrad.addColorStop(1, 'rgba(232, 93, 117, 0.25)');
-
-          ctx.strokeStyle = trailGrad;
-          ctx.lineWidth = Math.min(Math.max(mousePos.current.speed * 0.35, 3), 9);
-          ctx.lineCap = 'round';
-          ctx.lineJoin = 'round';
-          ctx.stroke();
-        }
-
-        // 2. Expanding water ripples
+      if (hoverState.current.isVisible && !hoverState.current.isInput && ripples.length > 0) {
+        // Expanding water ripples
         for (let i = ripples.length - 1; i >= 0; i--) {
           const r = ripples[i];
 
@@ -261,45 +238,17 @@ export default function CustomCursor() {
           ctx.restore();
         }
 
-        // Fade old trail points
-        for (let i = trail.length - 1; i >= 0; i--) {
-          trail[i].alpha *= 0.88;
-          if (trail[i].alpha < 0.02) {
-            trail.splice(i, 1);
-          }
+        // When all ripples fade out, sleep loop immediately
+        if (ripples.length === 0) {
+          isLoopRunning = false;
+          return;
         }
 
-        // 3. Tiny, elegant blush-pink focal point at the pointer tip
-        const mx = mousePos.current.x;
-        const my = mousePos.current.y;
-        if (mx >= 0 && my >= 0) {
-          ctx.save();
-
-          // Subtle soft glowing aura (7px radius)
-          const haloGrad = ctx.createRadialGradient(mx, my, 0.5, mx, my, 8);
-          haloGrad.addColorStop(0, 'rgba(232, 93, 117, 0.55)');
-          haloGrad.addColorStop(0.5, 'rgba(250, 218, 221, 0.28)');
-          haloGrad.addColorStop(1, 'rgba(248, 238, 240, 0)');
-
-          ctx.beginPath();
-          ctx.arc(mx, my, 8, 0, Math.PI * 2);
-          ctx.fillStyle = haloGrad;
-          ctx.fill();
-
-          // Tiny refined blush dot (2.2px radius)
-          ctx.beginPath();
-          ctx.arc(mx, my, 2.2, 0, Math.PI * 2);
-          ctx.fillStyle = '#E85D75';
-          ctx.fill();
-
-          ctx.restore();
-        }
+        animFrameId.current = requestAnimationFrame(render);
+      } else {
+        isLoopRunning = false;
       }
-
-      animFrameId.current = requestAnimationFrame(render);
     };
-
-    animFrameId.current = requestAnimationFrame(render);
 
     return () => {
       window.removeEventListener('resize', updateCanvasSize);

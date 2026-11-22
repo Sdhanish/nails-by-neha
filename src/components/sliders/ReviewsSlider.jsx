@@ -43,6 +43,8 @@ export default function ReviewsSlider() {
             setActiveIndex(swiper.realIndex);
           }}
           grabCursor={true}
+          touchReleaseOnEdges={true}
+          touchAngle={25}
           speed={600}
           spaceBetween={20}
           slidesPerView={1.1}

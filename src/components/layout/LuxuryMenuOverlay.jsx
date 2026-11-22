@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ArrowRight, User, Heart, ShoppingBag, ArrowUpRight } from 'lucide-react';
@@ -24,25 +24,30 @@ export default function LuxuryMenuOverlay({ isOpen, onClose }) {
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const scrollYRef = useRef(0);
 
-  // Scroll locking WITHOUT body padding shift (scrollbar-gutter: stable prevents jumping)
+  // Jump-free scroll locking: preserves exact scroll position without layout snap
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
     };
 
     if (isOpen) {
+      scrollYRef.current = window.scrollY;
       document.body.style.overflow = 'hidden';
       window.addEventListener('keydown', handleKeyDown);
-    } else {
-      document.body.style.overflow = '';
     }
 
     return () => {
-      document.body.style.overflow = '';
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose]);
+
+  // Restore scroll overflow ONLY when exit animation is completely finished
+  const handleExitComplete = () => {
+    document.body.style.overflow = '';
+    window.scrollTo({ top: scrollYRef.current, behavior: 'instant' });
+  };
 
   const handleNavigate = (path) => {
     onClose();
@@ -63,7 +68,7 @@ export default function LuxuryMenuOverlay({ isOpen, onClose }) {
   };
 
   return (
-    <AnimatePresence>
+    <AnimatePresence onExitComplete={handleExitComplete}>
       {isOpen && (
         <div
           className="fixed inset-0 z-50 overflow-hidden"
@@ -71,26 +76,28 @@ export default function LuxuryMenuOverlay({ isOpen, onClose }) {
           aria-modal="true"
           aria-label="Navigation drawer"
         >
-          {/* Subtle Dark Backdrop with smooth fade */}
+          {/* Subtle Dark Backdrop with smooth fade (no heavy filter recompilation) */}
           <motion.div
+            key="menu-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.28, ease: 'easeOut' }}
+            transition={{ duration: 0.24, ease: 'easeOut' }}
             onClick={onClose}
-            className="fixed inset-0 bg-[#1E1A1D]/40 backdrop-blur-[2px]"
+            className="fixed inset-0 bg-[#1E1A1D]/45 will-change-opacity"
           />
 
-          {/* Half-Screen Left Drawer with Luxury Blush Gradient & Shake-Free Slide */}
+          {/* Left Drawer with Luxury Blush Gradient & Shake-Free GPU Slide */}
           <motion.div
+            key="menu-drawer"
             initial={{ x: '-100%' }}
             animate={{ x: '0%' }}
             exit={{ x: '-100%' }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-y-0 left-0 w-[88vw] sm:w-[70vw] md:w-[50vw] lg:w-[40vw] max-w-lg bg-gradient-to-b from-[#FFFFFF] via-[#FFF9FA] to-[#F8EEF0] border-r border-[#EDE4E6] shadow-2xl z-10 flex flex-col justify-between overflow-y-auto"
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-y-0 left-0 w-[88vw] sm:w-[70vw] md:w-[48vw] lg:w-[38vw] max-w-md bg-gradient-to-b from-[#FFFFFF] via-[#FFF9FA] to-[#F8EEF0] border-r border-[#EDE4E6] shadow-2xl z-10 flex flex-col justify-between overflow-y-auto will-change-transform"
           >
             {/* Drawer Header */}
-            <div className="p-6 sm:p-7 flex items-center justify-between border-b border-[#EDE4E6] shrink-0 bg-white/80 backdrop-blur-xs">
+            <div className="p-6 sm:p-7 flex items-center justify-between border-b border-[#EDE4E6] shrink-0 bg-white/90">
               <Link
                 to="/"
                 onClick={onClose}
@@ -114,42 +121,27 @@ export default function LuxuryMenuOverlay({ isOpen, onClose }) {
               </button>
             </div>
 
-            {/* Essential Navigation Links with Staggered Entrance Animation */}
+            {/* Essential Navigation Links (rendered instantly with calm entrance) */}
             <div className="px-8 sm:px-10 py-6 sm:py-8 flex-1 flex flex-col justify-center">
               <nav className="space-y-3.5 sm:space-y-4">
-                {ESSENTIAL_NAV_LINKS.map((item, idx) => (
-                  <motion.div
-                    key={item.label}
-                    initial={{ opacity: 0, x: -16 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                      delay: 0.08 + idx * 0.035,
-                      duration: 0.35,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                  >
+                {ESSENTIAL_NAV_LINKS.map((item) => (
+                  <div key={item.label}>
                     <button
                       onClick={() => handleNavigate(item.path)}
                       className="group relative flex items-center justify-between w-full text-left font-medium text-2xl sm:text-3xl lg:text-[2.1rem] text-[#1E1A1D] hover:text-[#E85D75] tracking-[-0.02em] transition-colors duration-200 cursor-pointer py-1 lowercase"
                     >
                       <span className="transition-transform duration-200 group-hover:translate-x-1.5 relative inline-block">
                         {item.label}
-                        {/* Subtle Underline Gradient Indicator on Hover */}
                         <span className="absolute -bottom-0.5 left-0 h-[1.5px] w-0 bg-gradient-to-r from-[#E85D75] via-[#FADADD] to-transparent transition-all duration-300 group-hover:w-full" />
                       </span>
                       <ArrowRight className="w-4 h-4 text-[#E85D75] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200 shrink-0" />
                     </button>
-                  </motion.div>
+                  </div>
                 ))}
               </nav>
 
               {/* Instagram Studio Callout Card */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35, duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="pt-6 sm:pt-7 mt-5 border-t border-[#EDE4E6] space-y-3"
-              >
+              <div className="pt-6 sm:pt-7 mt-5 border-t border-[#EDE4E6] space-y-3">
                 <a
                   href={BRAND_CONFIG.social.instagram}
                   target="_blank"
@@ -171,7 +163,7 @@ export default function LuxuryMenuOverlay({ isOpen, onClose }) {
                   </div>
                   <ArrowUpRight className="w-4 h-4 text-[#6E6368] group-hover:text-[#E85D75] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                 </a>
-              </motion.div>
+              </div>
             </div>
 
             {/* Quick Action Footer in Drawer */}
