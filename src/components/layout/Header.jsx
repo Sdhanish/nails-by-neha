@@ -18,10 +18,19 @@ export default function Header() {
   const location = useLocation();
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrolled = window.scrollY > 20;
+          setIsScrolled((prev) => (prev !== scrolled ? scrolled : prev));
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -33,7 +42,7 @@ export default function Header() {
   return (
     <>
       <header
-        className={`sticky top-0 z-40 transition-colors duration-250 ${
+        className={`relative w-full transition-colors duration-250 ${
           isScrolled
             ? 'bg-gradient-to-r from-white/95 via-[#FAF7F5]/95 to-[#F8EEF0]/90 backdrop-blur-md shadow-xs border-b border-[#EDE4E6]'
             : 'bg-gradient-to-r from-[#FAF7F5] via-[#FFF9FA] to-[#FAF7F5] border-b border-[#EDE4E6]/80'
