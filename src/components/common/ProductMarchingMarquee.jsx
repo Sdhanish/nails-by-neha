@@ -46,7 +46,7 @@ export default function ProductMarchingMarquee() {
     <section className="w-full py-4 sm:py-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Clean, evenly spaced static horizontal row on desktop, touch-scrollable on mobile without animation */}
-        <div className="flex items-center justify-between gap-4 sm:gap-6 lg:gap-8 overflow-x-auto no-scrollbar py-2 px-1">
+        <div className="flex items-center justify-between gap-3 xs:gap-4 sm:gap-6 lg:gap-8 overflow-x-auto no-scrollbar py-2 px-1">
           {STUDIO_CATEGORIES.map((item) => (
             <Link
               key={item.name}
@@ -54,7 +54,7 @@ export default function ProductMarchingMarquee() {
               className="group flex flex-col items-center shrink-0 focus:outline-none transition-transform duration-300 hover:-translate-y-1.5"
             >
               {/* Circular category thumbnail with soft blush glow on hover */}
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full p-1.5 group-hover:shadow-[0_8px_20px_rgba(232,93,117,0.18)] transition-all duration-300">
+              <div className="relative w-[68px] h-[68px] xs:w-[76px] xs:h-[76px] sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full p-1 sm:p-1.5 group-hover:shadow-[0_8px_20px_rgba(232,93,117,0.18)] transition-all duration-300">
                 <div className="w-full h-full rounded-full overflow-hidden bg-[#F8EEF0]">
                   <ImageWithFallback
                     src={item.image}
@@ -65,7 +65,7 @@ export default function ProductMarchingMarquee() {
               </div>
 
               {/* Category label underneath in clean lowercase */}
-              <span className="text-xs sm:text-[13px] font-medium lowercase tracking-[-0.01em] text-[#1E1A1D] group-hover:text-[#E85D75] transition-colors text-center mt-3 whitespace-nowrap">
+              <span className="text-[11px] sm:text-[13px] font-medium lowercase tracking-[-0.01em] text-[#1E1A1D] group-hover:text-[#E85D75] transition-colors text-center mt-2 sm:mt-3 whitespace-nowrap">
                 {item.name}
               </span>
             </Link>

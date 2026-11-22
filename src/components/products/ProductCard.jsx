@@ -45,7 +45,7 @@ export default function ProductCard({ product }) {
   return (
     <>
       <div
-        className="group relative flex flex-col bg-white rounded-3xl border border-[#EDE4E6] overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#E85D75]/12 hover:border-[#E85D75]/40"
+        className="group relative flex flex-col bg-white rounded-2xl sm:rounded-3xl border border-[#EDE4E6] overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#E85D75]/12 hover:border-[#E85D75]/40"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -83,14 +83,14 @@ export default function ProductCard({ product }) {
           )}
 
           {/* Badges in Lowercase Refined Plus Jakarta Sans */}
-          <div className="absolute top-3.5 left-3.5 flex flex-col gap-1.5 z-10 pointer-events-none">
+          <div className="absolute top-2.5 left-2.5 sm:top-3.5 sm:left-3.5 flex flex-col gap-1 z-10 pointer-events-none">
             {product.badge && (
-              <span className="bg-[#1E1A1D]/90 backdrop-blur-md text-white text-[10px] font-medium lowercase tracking-[-0.01em] px-2.5 py-1 rounded-full shadow-2xs">
+              <span className="bg-[#1E1A1D]/90 backdrop-blur-md text-white text-[9px] sm:text-[10px] font-medium lowercase tracking-[-0.01em] px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full shadow-2xs">
                 {product.badge.toLowerCase()}
               </span>
             )}
             {discountPercent && (
-              <span className="bg-[#E85D75] text-white text-[10px] font-semibold lowercase tracking-[-0.01em] px-2 py-0.5 rounded-full shadow-2xs w-fit">
+              <span className="bg-[#E85D75] text-white text-[9px] sm:text-[10px] font-semibold lowercase tracking-[-0.01em] px-1.5 py-0.5 sm:px-2 sm:py-0.5 rounded-full shadow-2xs w-fit">
                 save {discountPercent}%
               </span>
             )}
@@ -100,7 +100,7 @@ export default function ProductCard({ product }) {
           <motion.button
             whileTap={{ scale: 0.82 }}
             onClick={handleWishlistClick}
-            className={`absolute top-3.5 right-3.5 z-10 w-8.5 h-8.5 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xs ${
+            className={`absolute top-2.5 right-2.5 sm:top-3.5 sm:right-3.5 z-10 w-7.5 h-7.5 sm:w-8.5 sm:h-8.5 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer shadow-xs ${
               isFavorited
                 ? 'bg-white text-[#E85D75] scale-105'
                 : 'bg-white/90 backdrop-blur-xs text-[#6E6368] hover:text-[#E85D75] hover:bg-white hover:scale-105'
@@ -108,7 +108,7 @@ export default function ProductCard({ product }) {
             aria-label={isFavorited ? 'remove from wishlist' : 'save to wishlist'}
           >
             <Heart
-              className={`w-4 h-4 transition-transform duration-200 ${
+              className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-200 ${
                 isFavorited ? 'fill-current scale-110' : ''
               }`}
             />
@@ -139,17 +139,17 @@ export default function ProductCard({ product }) {
         </Link>
 
         {/* Card Content & Hierarchy */}
-        <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between bg-white space-y-3">
+        <div className="p-3 sm:p-5 flex flex-col flex-1 justify-between bg-white space-y-2 sm:space-y-3">
           <div>
             {/* Meta Tags: Silhouette & Star Rating */}
-            <div className="flex items-center justify-between text-[11px] text-[#6E6368] mb-1">
-              <span className="font-normal lowercase">
+            <div className="flex items-center justify-between text-[10px] sm:text-[11px] text-[#6E6368] mb-0.5 sm:mb-1">
+              <span className="font-normal lowercase truncate max-w-[90px] xs:max-w-none">
                 {product.shape ? `${product.shape.toLowerCase()} • ${product.length?.toLowerCase()}` : product.categoryName?.toLowerCase()}
               </span>
-              <div className="flex items-center gap-1 text-amber-500 font-semibold">
-                <Star className="w-3 h-3 fill-current" />
-                <span className="text-[#1E1A1D] text-xs font-semibold">{product.rating}</span>
-                <span className="text-[#6E6368]/60 text-[10px]">({product.reviewCount})</span>
+              <div className="flex items-center gap-0.5 sm:gap-1 text-amber-500 font-semibold shrink-0">
+                <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-current" />
+                <span className="text-[#1E1A1D] text-[11px] sm:text-xs font-semibold">{product.rating}</span>
+                <span className="text-[#6E6368]/60 text-[9px] sm:text-[10px]">({product.reviewCount})</span>
               </div>
             </div>
 
@@ -158,25 +158,25 @@ export default function ProductCard({ product }) {
               to={`/product/${product.slug}`}
               className="block group-hover:text-[#E85D75] transition-colors"
             >
-              <h3 className="font-bold text-base sm:text-lg text-[#1E1A1D] lowercase tracking-[-0.03em] leading-snug line-clamp-1">
+              <h3 className="font-bold text-xs sm:text-base md:text-lg text-[#1E1A1D] lowercase tracking-[-0.03em] leading-snug line-clamp-1">
                 {product.name.toLowerCase()}
               </h3>
             </Link>
 
             {/* Finish & Subtitle */}
-            <p className="text-xs text-[#6E6368] font-normal lowercase line-clamp-1 mt-0.5 leading-normal">
+            <p className="text-[11px] sm:text-xs text-[#6E6368] font-normal lowercase line-clamp-1 mt-0.5 leading-normal">
               {product.shortDescription?.toLowerCase()}
             </p>
           </div>
 
           {/* Pricing & Mobile Quick Action */}
-          <div className="flex items-center justify-between pt-2.5 border-t border-[#EDE4E6]/80">
-            <div className="flex items-baseline gap-2">
-              <span className="text-base font-bold text-[#1E1A1D] tracking-[-0.02em]">
+          <div className="flex items-center justify-between pt-2 sm:pt-2.5 border-t border-[#EDE4E6]/80">
+            <div className="flex items-baseline gap-1.5 sm:gap-2">
+              <span className="text-xs sm:text-base font-bold text-[#1E1A1D] tracking-[-0.02em]">
                 ₹{product.price}
               </span>
               {product.originalPrice && product.originalPrice > product.price && (
-                <span className="text-xs text-[#6E6368]/70 line-through">
+                <span className="text-[10px] sm:text-xs text-[#6E6368]/70 line-through">
                   ₹{product.originalPrice}
                 </span>
               )}
@@ -185,13 +185,13 @@ export default function ProductCard({ product }) {
             {/* Mobile-visible quick add button */}
             <button
               onClick={handleQuickAdd}
-              className="sm:hidden p-2 rounded-full bg-[#FAF7F5] hover:bg-[#E85D75] hover:text-white text-[#1E1A1D] border border-[#EDE4E6] transition-colors cursor-pointer active:scale-95"
+              className="sm:hidden p-1.5 rounded-full bg-[#FAF7F5] hover:bg-[#E85D75] hover:text-white text-[#1E1A1D] border border-[#EDE4E6] transition-colors cursor-pointer active:scale-95"
               aria-label={`add ${product.name.toLowerCase()} to bag`}
             >
               {justAdded ? (
-                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                <Check className="w-3 h-3 text-emerald-600" />
               ) : (
-                <ShoppingBag className="w-3.5 h-3.5" />
+                <ShoppingBag className="w-3 h-3" />
               )}
             </button>
           </div>

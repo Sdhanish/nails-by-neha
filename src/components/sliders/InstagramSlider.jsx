@@ -68,17 +68,7 @@ export default function InstagramSlider() {
 
   return (
     <div className="relative w-full overflow-hidden">
-      {/* Subtly softened Vignette Edge Gradient Masks */}
-      <div
-        className="absolute inset-y-0 left-0 w-6 sm:w-12 lg:w-16 bg-gradient-to-r from-[#FAF7F5]/70 via-[#FAF7F5]/30 to-transparent pointer-events-none z-10"
-        aria-hidden="true"
-      />
-      <div
-        className="absolute inset-y-0 right-0 w-6 sm:w-12 lg:w-16 bg-gradient-to-l from-[#FAF7F5]/70 via-[#FAF7F5]/30 to-transparent pointer-events-none z-10"
-        aria-hidden="true"
-      />
-
-      {/* Full-width continuous linear Swiper with FreeMode + Autoplay & Touch/Mouse drag */}
+      {/* Full-width continuous linear Swiper with FreeMode + Autoplay & Touch/Mouse drag (no side gradients) */}
       <div className="overflow-visible py-2">
         <Swiper
           modules={[Autoplay, FreeMode]}
@@ -96,11 +86,15 @@ export default function InstagramSlider() {
           speed={9000}
           allowTouchMove={true}
           grabCursor={true}
-          spaceBetween={18}
-          slidesPerView={1.3}
+          spaceBetween={12}
+          slidesPerView={1.85}
           breakpoints={{
+            360: {
+              slidesPerView: 2.15,
+              spaceBetween: 12,
+            },
             480: {
-              slidesPerView: 2.2,
+              slidesPerView: 2.5,
               spaceBetween: 16,
             },
             768: {
@@ -131,15 +125,15 @@ export default function InstagramSlider() {
                 />
 
                 {/* Ambient Instagram Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1E1A1D]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
-                  <div className="flex items-center gap-1.5 text-xs text-[#FADADD] mb-1">
-                    <Heart className="w-3.5 h-3.5 fill-current" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1E1A1D]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 sm:p-4 text-white">
+                  <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-[#FADADD] mb-1">
+                    <Heart className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
                     <span>{post.likes}</span>
                   </div>
-                  <p className="text-[11px] text-white/90 font-normal lowercase line-clamp-2 leading-snug">
+                  <p className="text-[10px] sm:text-[11px] text-white/90 font-normal lowercase line-clamp-2 leading-snug">
                     {post.caption}
                   </p>
-                  <span className="text-[10px] text-[#FADADD]/80 font-medium lowercase tracking-wider mt-1 block">
+                  <span className="text-[9px] sm:text-[10px] text-[#FADADD]/80 font-medium lowercase tracking-wider mt-0.5 sm:mt-1 block">
                     {post.tag}
                   </span>
                 </div>

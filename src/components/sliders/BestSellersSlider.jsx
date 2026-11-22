@@ -56,18 +56,8 @@ export default function BestSellersSlider({ products = [] }) {
         )}
       </div>
 
-      {/* 2. Desktop & Tablet View (>= 768px): Preserved full-width continuous Swiper with softened side gradients */}
+      {/* 2. Desktop & Tablet View (>= 768px): Preserved full-width continuous Swiper without side gradient masks */}
       <div className="hidden md:block relative w-full overflow-hidden">
-        {/* Softened Vignette Edge Masks (reduced opacity and width) */}
-        <div
-          className="absolute inset-y-0 left-0 w-8 lg:w-16 bg-gradient-to-r from-[#FAF7F5]/70 via-[#FAF7F5]/30 to-transparent pointer-events-none z-10"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute inset-y-0 right-0 w-8 lg:w-16 bg-gradient-to-l from-[#FAF7F5]/70 via-[#FAF7F5]/30 to-transparent pointer-events-none z-10"
-          aria-hidden="true"
-        />
-
         {/* Full-width continuous linear Swiper with FreeMode + Autoplay & drag/swipe support */}
         <div className="overflow-visible py-2">
           <Swiper
