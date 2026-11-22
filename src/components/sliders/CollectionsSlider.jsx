@@ -22,54 +22,63 @@ export default function CollectionsSlider() {
 
   return (
     <div className="relative w-full overflow-hidden">
-      {/* Soft Vignette Edge Masks */}
+      {/* Subtly softened Vignette Edge Masks (reduced width & opacity to prevent clipping cards) */}
       <div
-        className="absolute inset-y-0 left-0 w-16 sm:w-28 bg-gradient-to-r from-[#FAF7F5] via-[#FAF7F5]/85 to-transparent pointer-events-none z-10"
+        className="absolute inset-y-0 left-0 w-4 sm:w-12 lg:w-16 bg-gradient-to-r from-[#FAF7F5]/70 via-[#FAF7F5]/30 to-transparent pointer-events-none z-10"
         aria-hidden="true"
       />
       <div
-        className="absolute inset-y-0 right-0 w-16 sm:w-28 bg-gradient-to-l from-[#FAF7F5] via-[#FAF7F5]/85 to-transparent pointer-events-none z-10"
+        className="absolute inset-y-0 right-0 w-4 sm:w-12 lg:w-16 bg-gradient-to-l from-[#FAF7F5]/70 via-[#FAF7F5]/30 to-transparent pointer-events-none z-10"
         aria-hidden="true"
       />
 
-      {/* Swiper with FreeMode + Autoplay: Smooth continuous right-to-left crawl with mouse & touch drag */}
+      {/* Swiper: Centered active card on mobile so each card is 100% visible and unclipped */}
       <div className="overflow-visible py-2">
         <Swiper
           modules={[Autoplay, FreeMode]}
           loop={true}
-          freeMode={{
-            enabled: true,
-            momentum: false,
-          }}
+          centeredSlides={true}
           autoplay={{
-            delay: 0,
+            delay: 3500,
             disableOnInteraction: false,
             pauseOnMouseEnter: false,
-            reverseDirection: false, // Right-to-Left movement
           }}
-          speed={8500}
+          speed={650}
           allowTouchMove={true}
           grabCursor={true}
-          spaceBetween={20}
-          slidesPerView={1.2}
+          spaceBetween={14}
+          slidesPerView={1.14}
           breakpoints={{
+            360: {
+              slidesPerView: 1.15,
+              spaceBetween: 14,
+              centeredSlides: true,
+            },
+            414: {
+              slidesPerView: 1.22,
+              spaceBetween: 16,
+              centeredSlides: true,
+            },
             640: {
               slidesPerView: 2.2,
               spaceBetween: 20,
+              centeredSlides: false,
             },
             1024: {
               slidesPerView: 2.8,
               spaceBetween: 24,
+              centeredSlides: false,
             },
             1280: {
               slidesPerView: 3.3,
               spaceBetween: 24,
+              centeredSlides: false,
             },
           }}
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
           }}
-          className="swiper-linear-marquee overflow-visible!"
+          className="w-full"
         >
           {loopCollections.map((col, idx) => (
             <SwiperSlide key={`${col.id}-${idx}`} className="h-auto">
@@ -86,7 +95,7 @@ function CollectionCard({ collection }) {
   return (
     <Link
       to={collection.link}
-      className="group relative flex flex-col h-[300px] sm:h-[330px] rounded-3xl overflow-hidden bg-white border border-[#EDE4E6] shadow-xs hover:border-[#E85D75]/40 hover:shadow-lg transition-all duration-500"
+      className="group relative flex flex-col h-[290px] xs:h-[310px] sm:h-[330px] rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[#EDE4E6] shadow-xs hover:border-[#E85D75]/40 hover:shadow-lg transition-all duration-500 block"
     >
       {/* Campaign Photography with Controlled Aspect */}
       <div className="relative w-full h-full overflow-hidden bg-[#F8EEF0]">
@@ -112,14 +121,14 @@ function CollectionCard({ collection }) {
         <div className="absolute inset-0 bg-gradient-to-t from-[#1E1A1D]/85 via-[#1E1A1D]/30 to-transparent opacity-85 group-hover:opacity-95 transition-opacity" />
 
         {/* Minimal Collection Name & Subtitle in Lowercase */}
-        <div className="absolute bottom-5 left-5 right-5 text-white z-10 space-y-1">
-          <span className="text-[11px] text-[#FADADD] font-normal lowercase tracking-normal block">
+        <div className="absolute bottom-4 left-4 right-4 sm:bottom-5 sm:left-5 sm:right-5 text-white z-10 space-y-1">
+          <span className="text-[11px] text-[#FADADD] font-normal lowercase tracking-normal block line-clamp-1">
             {collection.subtitle?.toLowerCase()}
           </span>
-          <h3 className="text-xl sm:text-2xl font-bold lowercase tracking-[-0.03em] leading-[1.1] group-hover:text-[#FADADD] transition-colors">
+          <h3 className="text-xl sm:text-2xl font-bold lowercase tracking-[-0.03em] leading-[1.1] group-hover:text-[#FADADD] transition-colors line-clamp-1">
             {collection.title?.toLowerCase()}
           </h3>
-          <div className="pt-1.5 flex items-center gap-1 text-xs font-medium lowercase tracking-[-0.01em] text-[#FADADD] group-hover:translate-x-1 transition-transform">
+          <div className="pt-1 sm:pt-1.5 flex items-center gap-1 text-xs font-medium lowercase tracking-[-0.01em] text-[#FADADD] group-hover:translate-x-1 transition-transform">
             <span>explore edit</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </div>

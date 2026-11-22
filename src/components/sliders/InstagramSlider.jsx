@@ -68,13 +68,13 @@ export default function InstagramSlider() {
 
   return (
     <div className="relative w-full overflow-hidden">
-      {/* Soft Vignette Edge Gradient Masks */}
+      {/* Subtly softened Vignette Edge Gradient Masks */}
       <div
-        className="absolute inset-y-0 left-0 w-16 sm:w-28 bg-gradient-to-r from-[#FAF7F5] via-[#FAF7F5]/85 to-transparent pointer-events-none z-10"
+        className="absolute inset-y-0 left-0 w-6 sm:w-12 lg:w-16 bg-gradient-to-r from-[#FAF7F5]/70 via-[#FAF7F5]/30 to-transparent pointer-events-none z-10"
         aria-hidden="true"
       />
       <div
-        className="absolute inset-y-0 right-0 w-16 sm:w-28 bg-gradient-to-l from-[#FAF7F5] via-[#FAF7F5]/85 to-transparent pointer-events-none z-10"
+        className="absolute inset-y-0 right-0 w-6 sm:w-12 lg:w-16 bg-gradient-to-l from-[#FAF7F5]/70 via-[#FAF7F5]/30 to-transparent pointer-events-none z-10"
         aria-hidden="true"
       />
 
@@ -90,7 +90,7 @@ export default function InstagramSlider() {
           autoplay={{
             delay: 0,
             disableOnInteraction: false,
-            pauseOnMouseEnter: false, // CONTINUES MOVING WHILE POINTER IS HOVERING
+            pauseOnMouseEnter: false,
             reverseDirection: false, // Smooth right-to-left continuous crawl
           }}
           speed={9000}
@@ -101,7 +101,7 @@ export default function InstagramSlider() {
           breakpoints={{
             480: {
               slidesPerView: 2.2,
-              spaceBetween: 18,
+              spaceBetween: 16,
             },
             768: {
               slidesPerView: 3.2,
@@ -112,7 +112,7 @@ export default function InstagramSlider() {
               spaceBetween: 22,
             },
             1280: {
-              slidesPerView: 5,
+              slidesPerView: 5.2,
               spaceBetween: 24,
             },
           }}
@@ -122,35 +122,28 @@ export default function InstagramSlider() {
           className="swiper-linear-marquee overflow-visible!"
         >
           {loopPosts.map((post, idx) => (
-            <SwiperSlide key={`${post.id}-${idx}`}>
-              <a
-                href={BRAND_CONFIG.social.instagram}
-                target="_blank"
-                rel="noreferrer"
-                className="group relative block aspect-square rounded-3xl overflow-hidden border border-[#EDE4E6] bg-[#F8EEF0] shadow-xs hover:shadow-md transition-all duration-300"
-              >
+            <SwiperSlide key={`${post.id}-${idx}`} className="h-auto">
+              <div className="group relative aspect-4/5 rounded-2xl sm:rounded-3xl overflow-hidden bg-white border border-[#EDE4E6] shadow-2xs hover:shadow-md transition-all duration-300">
                 <ImageWithFallback
                   src={post.image}
                   alt={post.caption}
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-106"
                 />
 
-                {/* Minimalist dark gradient overlay with likes and tag */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1E1A1D]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-5 text-white">
-                  <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="font-medium lowercase text-xs text-[#FADADD]">
-                      {post.tag.toLowerCase()}
-                    </span>
-                    <span className="flex items-center gap-1 text-xs">
-                      <Heart className="w-3.5 h-3.5 fill-current text-[#E85D75]" />
-                      {post.likes}
-                    </span>
+                {/* Ambient Instagram Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1E1A1D]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
+                  <div className="flex items-center gap-1.5 text-xs text-[#FADADD] mb-1">
+                    <Heart className="w-3.5 h-3.5 fill-current" />
+                    <span>{post.likes}</span>
                   </div>
-                  <p className="text-[11px] text-white/85 line-clamp-1 leading-tight font-normal lowercase">
+                  <p className="text-[11px] text-white/90 font-normal lowercase line-clamp-2 leading-snug">
                     {post.caption}
                   </p>
+                  <span className="text-[10px] text-[#FADADD]/80 font-medium lowercase tracking-wider mt-1 block">
+                    {post.tag}
+                  </span>
                 </div>
-              </a>
+              </div>
             </SwiperSlide>
           ))}
         </Swiper>
